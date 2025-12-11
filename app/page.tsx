@@ -79,15 +79,15 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Bike Rush */}
+          {/* Mind Speed Racer */}
           <Link href="/brain-test/racing">
             <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🚴</div>
               <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
-                Bike Rush
+                Mind Speed Racer
               </h2>
               <p className="text-[#CBD5E1]">
-                Race for 60 seconds, avoid bikes, collect boosts
+                Race for 30 seconds, avoid bikes, maintain speed
               </p>
             </div>
           </Link>

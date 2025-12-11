@@ -226,7 +226,7 @@ export default function MathSpeedTest() {
             onClick={saveAndContinue}
             className="w-full bg-[#A855F7] hover:bg-[#4F7BFE] text-white font-bold py-4 px-8 rounded-lg transition-all shadow-glow-purple hover:shadow-glow-blue"
           >
-            Continue to Bike Rush
+            Continue to Mind Speed Racer
           </button>
         </div>
       </div>

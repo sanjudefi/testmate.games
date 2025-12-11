@@ -55,8 +55,8 @@ export default function BrainTestPage() {
       path: "/brain-test/math-speed",
     },
     {
-      name: "Bike Rush",
-      description: "Race for 60 seconds, avoid bikes, collect boosts",
+      name: "Mind Speed Racer",
+      description: "Race for 30 seconds, avoid bikes, maintain speed",
       icon: "🚴",
       color: "#4F7BFE",
       path: "/brain-test/racing",

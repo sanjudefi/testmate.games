@@ -31,7 +31,7 @@ export default function ResultsPage() {
       { name: "Chimp Test", score: chimpTest, icon: "🐵", color: "#A855F7" },
       { name: "Catch the Fish", score: catchFish, icon: "🐟", color: "#A855F7" },
       { name: "Math Speed", score: mathSpeed, icon: "➕", color: "#A855F7" },
-      { name: "Bike Rush", score: racing, icon: "🚴", color: "#4F7BFE" },
+      { name: "Mind Speed Racer", score: racing, icon: "🚴", color: "#4F7BFE" },
     ];
 
     setResults(testResults);
