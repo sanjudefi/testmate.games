@@ -10,7 +10,8 @@ export default function BrainTestPage() {
     localStorage.removeItem("wordMemoryScore");
     localStorage.removeItem("numberMemoryScore");
     localStorage.removeItem("chimpTestScore");
-    localStorage.removeItem("aimTrainerScore");
+    localStorage.removeItem("catchFishScore");
+    localStorage.removeItem("racingScore");
 
     // Start with the first test
     router.push("/brain-test/word-memory");
@@ -19,14 +20,14 @@ export default function BrainTestPage() {
   const tests = [
     {
       name: "Word Memory",
-      description: "Memorize and identify 5 words from a list of 10",
+      description: "Remember 5 words shown 3 times, 5 seconds each",
       icon: "🧠",
       color: "#4F7BFE",
       path: "/brain-test/word-memory",
     },
     {
       name: "Number Memory",
-      description: "Remember and recall a 6-digit number",
+      description: "Recall 3 different 6-digit numbers",
       icon: "🔢",
       color: "#4F7BFE",
       path: "/brain-test/number-memory",
@@ -39,11 +40,18 @@ export default function BrainTestPage() {
       path: "/brain-test/chimp-test",
     },
     {
-      name: "Aim Trainer",
-      description: "Test your reaction time and accuracy",
-      icon: "🎯",
+      name: "Catch the Fish",
+      description: "Catch fish as fast as you can for 10 seconds",
+      icon: "🐟",
       color: "#A855F7",
       path: "/brain-test/aim-trainer",
+    },
+    {
+      name: "Speed Racing",
+      description: "Reach maximum speed while avoiding obstacles",
+      icon: "🏎️",
+      color: "#4F7BFE",
+      path: "/brain-test/racing",
     },
   ];
 
@@ -55,7 +63,7 @@ export default function BrainTestPage() {
             Daily Brain Test
           </h1>
           <p className="text-xl text-[#CBD5E1] mb-6">
-            Complete all 4 tests to get your comprehensive brain score
+            Complete all 5 tests to get your comprehensive brain score
           </p>
           <button
             onClick={startFullTest}

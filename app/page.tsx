@@ -13,7 +13,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Word Memory Test */}
           <Link href="/brain-test/word-memory">
             <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
@@ -22,7 +22,7 @@ export default function HomePage() {
                 Word Memory
               </h2>
               <p className="text-[#CBD5E1]">
-                Remember 5 words and identify them from a list of 10
+                Remember 5 words shown 3 times, 5 seconds each
               </p>
             </div>
           </Link>
@@ -35,7 +35,7 @@ export default function HomePage() {
                 Number Memory
               </h2>
               <p className="text-[#CBD5E1]">
-                Remember and recall a 6-digit number
+                Recall 3 different 6-digit numbers
               </p>
             </div>
           </Link>
@@ -53,15 +53,28 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Aim Trainer */}
+          {/* Catch the Fish */}
           <Link href="/brain-test/aim-trainer">
             <div className="card-testmate p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
-              <div className="text-4xl mb-4">🎯</div>
+              <div className="text-4xl mb-4">🐟</div>
               <h2 className="text-2xl font-bold mb-2 text-[#A855F7] group-hover:text-[#CBD5E1] transition-colors">
-                Aim Trainer
+                Catch the Fish
               </h2>
               <p className="text-[#CBD5E1]">
-                Click circles as fast as you can to test reaction time
+                Catch fish as fast as you can for 10 seconds
+              </p>
+            </div>
+          </Link>
+
+          {/* Speed Racing */}
+          <Link href="/brain-test/racing">
+            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
+              <div className="text-4xl mb-4">🏎️</div>
+              <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
+                Speed Racing
+              </h2>
+              <p className="text-[#CBD5E1]">
+                Reach maximum speed while avoiding obstacles
               </p>
             </div>
           </Link>

@@ -13,6 +13,7 @@ export default function WordMemoryTest() {
   const [allWords, setAllWords] = useState<string[]>([]);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(5);
+  const [currentRound, setCurrentRound] = useState(1);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -20,14 +21,22 @@ export default function WordMemoryTest() {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (phase === "memorize" && timeLeft === 0) {
-      startRecallPhase();
+      if (currentRound < 3) {
+        // Move to next round
+        setCurrentRound(currentRound + 1);
+        setTimeLeft(5);
+      } else {
+        // All 3 rounds complete, start recall
+        startRecallPhase();
+      }
     }
-  }, [phase, timeLeft]);
+  }, [phase, timeLeft, currentRound]);
 
   const startTest = () => {
     const words = getRandomWords(5);
     setOriginalWords(words);
     setTimeLeft(5);
+    setCurrentRound(1);
     setPhase("memorize");
   };
 
@@ -67,13 +76,13 @@ export default function WordMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              In this test, you'll see <strong className="text-white">5 words</strong> for 5 seconds.
+              You'll see <strong className="text-white">5 words</strong> repeated <strong className="text-white">3 times</strong>.
             </p>
             <p className="text-lg">
-              After they disappear, you'll see <strong className="text-white">10 words</strong> (5 original + 5 confusing).
+              Each round lasts <strong className="text-white">5 seconds</strong>.
             </p>
             <p className="text-lg">
-              Select the <strong className="text-white">5 original words</strong> you memorized.
+              After all 3 rounds, select the <strong className="text-white">5 original words</strong> from 10 options.
             </p>
           </div>
           <button
@@ -98,6 +107,9 @@ export default function WordMemoryTest() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-4xl w-full">
           <div className="text-center mb-8">
+            <div className="text-2xl text-[#CBD5E1] mb-2">
+              Round {currentRound} of 3
+            </div>
             <div className="text-6xl font-bold text-[#4F7BFE] mb-4">{timeLeft}s</div>
             <p className="text-xl text-[#CBD5E1]">Memorize these words</p>
           </div>
