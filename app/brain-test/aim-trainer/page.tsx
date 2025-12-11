@@ -11,10 +11,17 @@ interface Fish {
   y: number;
 }
 
+interface Teardrop {
+  id: number;
+  x: number;
+  y: number;
+}
+
 export default function CatchTheFish() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
   const [fishes, setFishes] = useState<Fish[]>([]);
+  const [teardrops, setTeardrops] = useState<Teardrop[]>([]);
   const [caught, setCaught] = useState(0);
   const [missed, setMissed] = useState(0);
   const [reactionTimes, setReactionTimes] = useState<number[]>([]);
@@ -43,7 +50,7 @@ export default function CatchTheFish() {
 
     const areaWidth = gameAreaRef.current.clientWidth;
     const areaHeight = gameAreaRef.current.clientHeight;
-    const fishSize = 80;
+    const fishSize = 120; // Increased from 80 for larger fish
 
     const x = Math.random() * (areaWidth - fishSize);
     const y = Math.random() * (areaHeight - fishSize);
@@ -66,10 +73,23 @@ export default function CatchTheFish() {
     setPhase("playing");
   };
 
-  const handleFishClick = (fishId: number) => {
+  const handleFishClick = (fishId: number, fishX: number, fishY: number) => {
     const reactionTime = Date.now() - fishAppearTime.current;
     setReactionTimes([...reactionTimes, reactionTime]);
     setCaught(caught + 1);
+
+    // Create teardrops at fish position
+    const newTeardrops: Teardrop[] = [
+      { id: Date.now(), x: fishX + 30, y: fishY + 20 },
+      { id: Date.now() + 1, x: fishX + 60, y: fishY + 20 },
+    ];
+    setTeardrops([...teardrops, ...newTeardrops]);
+
+    // Remove teardrops after animation
+    setTimeout(() => {
+      setTeardrops(current => current.filter(t => !newTeardrops.find(nt => nt.id === t.id)));
+    }, 1000);
+
     setFishes([]);
 
     // Spawn next fish after a short delay
@@ -100,7 +120,7 @@ export default function CatchTheFish() {
 
   const saveAndContinue = () => {
     localStorage.setItem("catchFishScore", score.toString());
-    router.push("/brain-test/racing");
+    router.push("/brain-test/math-speed");
   };
 
   if (phase === "intro") {
@@ -153,29 +173,115 @@ export default function CatchTheFish() {
         <div
           ref={gameAreaRef}
           onClick={handleMissClick}
-          className="flex-1 relative bg-gradient-to-b from-[#1E293B] to-[#0F172A] rounded-lg border-2 border-[#334155] cursor-crosshair overflow-hidden"
+          className="flex-1 relative rounded-lg border-2 border-[#4F7BFE] cursor-crosshair overflow-hidden"
           style={{
-            backgroundImage: "radial-gradient(circle at 50% 50%, rgba(79, 123, 254, 0.05) 0%, transparent 50%)"
+            background: "linear-gradient(180deg, rgba(30, 64, 175, 0.3) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(30, 41, 59, 0.5) 100%)",
+            backgroundImage: `
+              linear-gradient(180deg, rgba(30, 64, 175, 0.3) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(30, 41, 59, 0.5) 100%),
+              repeating-linear-gradient(
+                90deg,
+                rgba(79, 123, 254, 0.03) 0px,
+                rgba(79, 123, 254, 0.08) 20px,
+                rgba(79, 123, 254, 0.03) 40px
+              ),
+              radial-gradient(circle at 30% 40%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(79, 123, 254, 0.1) 0%, transparent 50%)
+            `
           }}
         >
+          {/* Animated wave effect */}
+          <div className="absolute inset-0 pointer-events-none opacity-20">
+            <div className="wave-animation"></div>
+          </div>
+
+          {/* Fish */}
           {fishes.map((fish) => (
             <button
               key={fish.id}
               onClick={(e) => {
                 e.stopPropagation();
-                handleFishClick(fish.id);
+                handleFishClick(fish.id, fish.x, fish.y);
               }}
-              className="absolute text-6xl hover:scale-110 transition-transform cursor-pointer"
+              className="absolute text-9xl hover:scale-110 transition-transform cursor-pointer animate-swim"
               style={{
                 left: `${fish.x}px`,
                 top: `${fish.y}px`,
-                filter: "drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))"
+                filter: "drop-shadow(0 0 15px rgba(79, 123, 254, 0.6))"
               }}
             >
               🐟
             </button>
           ))}
+
+          {/* Teardrops */}
+          {teardrops.map((tear) => (
+            <div
+              key={tear.id}
+              className="absolute text-4xl animate-teardrop pointer-events-none"
+              style={{
+                left: `${tear.x}px`,
+                top: `${tear.y}px`,
+              }}
+            >
+              💧
+            </div>
+          ))}
         </div>
+
+        <style jsx>{`
+          @keyframes teardrop {
+            0% {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(-80px) scale(0.5);
+              opacity: 0;
+            }
+          }
+
+          @keyframes swim {
+            0%, 100% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+
+          @keyframes wave {
+            0% {
+              transform: translateX(0) translateY(0);
+            }
+            50% {
+              transform: translateX(-25px) translateY(-5px);
+            }
+            100% {
+              transform: translateX(0) translateY(0);
+            }
+          }
+
+          .animate-teardrop {
+            animation: teardrop 1s ease-out forwards;
+          }
+
+          .animate-swim {
+            animation: swim 2s ease-in-out infinite;
+          }
+
+          .wave-animation {
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+              0deg,
+              rgba(79, 123, 254, 0.1) 0px,
+              transparent 3px,
+              transparent 8px,
+              rgba(79, 123, 254, 0.05) 11px
+            );
+            animation: wave 8s linear infinite;
+          }
+        `}</style>
       </div>
     );
   }
@@ -222,7 +328,7 @@ export default function CatchTheFish() {
             onClick={saveAndContinue}
             className="w-full bg-[#A855F7] hover:bg-[#4F7BFE] text-white font-bold py-4 px-8 rounded-lg transition-all shadow-glow-purple hover:shadow-glow-blue"
           >
-            Continue to Racing Game
+            Continue to Math Speed Test
           </button>
         </div>
       </div>

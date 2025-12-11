@@ -22,6 +22,7 @@ export default function ResultsPage() {
     const numberMemory = parseInt(localStorage.getItem("numberMemoryScore") || "0");
     const chimpTest = parseInt(localStorage.getItem("chimpTestScore") || "0");
     const catchFish = parseInt(localStorage.getItem("catchFishScore") || "0");
+    const mathSpeed = parseInt(localStorage.getItem("mathSpeedScore") || "0");
     const racing = parseInt(localStorage.getItem("racingScore") || "0");
 
     const testResults: TestResult[] = [
@@ -29,14 +30,15 @@ export default function ResultsPage() {
       { name: "Number Memory", score: numberMemory, icon: "🔢", color: "#4F7BFE" },
       { name: "Chimp Test", score: chimpTest, icon: "🐵", color: "#A855F7" },
       { name: "Catch the Fish", score: catchFish, icon: "🐟", color: "#A855F7" },
-      { name: "Speed Racing", score: racing, icon: "🏎️", color: "#4F7BFE" },
+      { name: "Math Speed", score: mathSpeed, icon: "➕", color: "#A855F7" },
+      { name: "Bike Rush", score: racing, icon: "🚴", color: "#4F7BFE" },
     ];
 
     setResults(testResults);
 
     // Calculate overall score
-    const total = wordMemory + numberMemory + chimpTest + catchFish + racing;
-    const average = Math.round(total / 5);
+    const total = wordMemory + numberMemory + chimpTest + catchFish + mathSpeed + racing;
+    const average = Math.round(total / 6);
     setOverallScore(average);
 
     setLoading(false);
@@ -61,6 +63,7 @@ export default function ResultsPage() {
     localStorage.removeItem("numberMemoryScore");
     localStorage.removeItem("chimpTestScore");
     localStorage.removeItem("catchFishScore");
+    localStorage.removeItem("mathSpeedScore");
     localStorage.removeItem("racingScore");
     router.push("/");
   };
@@ -182,8 +185,12 @@ export default function ResultsPage() {
               <span className="text-white font-bold">{results[3].score}%</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-[#0F172A] rounded-lg">
-              <span className="text-[#CBD5E1]">Motor Skills:</span>
+              <span className="text-[#CBD5E1]">Math Skills:</span>
               <span className="text-white font-bold">{results[4].score}%</span>
+            </div>
+            <div className="flex justify-between items-center p-4 bg-[#0F172A] rounded-lg">
+              <span className="text-[#CBD5E1]">Motor Skills:</span>
+              <span className="text-white font-bold">{results[5].score}%</span>
             </div>
           </div>
         </div>

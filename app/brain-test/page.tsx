@@ -11,6 +11,7 @@ export default function BrainTestPage() {
     localStorage.removeItem("numberMemoryScore");
     localStorage.removeItem("chimpTestScore");
     localStorage.removeItem("catchFishScore");
+    localStorage.removeItem("mathSpeedScore");
     localStorage.removeItem("racingScore");
 
     // Start with the first test
@@ -20,14 +21,14 @@ export default function BrainTestPage() {
   const tests = [
     {
       name: "Word Memory",
-      description: "Remember 5 words shown 3 times, 5 seconds each",
+      description: "Remember 5 different words each round, 3 rounds total",
       icon: "🧠",
       color: "#4F7BFE",
       path: "/brain-test/word-memory",
     },
     {
       name: "Number Memory",
-      description: "Recall 3 different 6-digit numbers",
+      description: "Recall 3 different 6-digit numbers, one at a time",
       icon: "🔢",
       color: "#4F7BFE",
       path: "/brain-test/number-memory",
@@ -47,9 +48,16 @@ export default function BrainTestPage() {
       path: "/brain-test/aim-trainer",
     },
     {
-      name: "Speed Racing",
-      description: "Reach maximum speed while avoiding obstacles",
-      icon: "🏎️",
+      name: "Math Speed",
+      description: "Solve 5 addition problems in 5 seconds each",
+      icon: "➕",
+      color: "#A855F7",
+      path: "/brain-test/math-speed",
+    },
+    {
+      name: "Bike Rush",
+      description: "Race for 60 seconds, avoid bikes, collect boosts",
+      icon: "🚴",
       color: "#4F7BFE",
       path: "/brain-test/racing",
     },
@@ -63,7 +71,7 @@ export default function BrainTestPage() {
             Daily Brain Test
           </h1>
           <p className="text-xl text-[#CBD5E1] mb-6">
-            Complete all 5 tests to get your comprehensive brain score
+            Complete all 6 tests to get your comprehensive brain score
           </p>
           <button
             onClick={startFullTest}
@@ -106,7 +114,7 @@ export default function BrainTestPage() {
                 1
               </div>
               <p>
-                Complete all 4 brain tests in sequence. Each test measures a
+                Complete all 6 brain tests in sequence. Each test measures a
                 different cognitive ability.
               </p>
             </div>

@@ -22,7 +22,7 @@ export default function HomePage() {
                 Word Memory
               </h2>
               <p className="text-[#CBD5E1]">
-                Remember 5 words shown 3 times, 5 seconds each
+                Remember 5 different words each round, 3 rounds
               </p>
             </div>
           </Link>
@@ -35,7 +35,7 @@ export default function HomePage() {
                 Number Memory
               </h2>
               <p className="text-[#CBD5E1]">
-                Recall 3 different 6-digit numbers
+                Recall 3 different 6-digit numbers, one at a time
               </p>
             </div>
           </Link>
@@ -66,15 +66,28 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Speed Racing */}
-          <Link href="/brain-test/racing">
-            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
-              <div className="text-4xl mb-4">🏎️</div>
-              <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
-                Speed Racing
+          {/* Math Speed */}
+          <Link href="/brain-test/math-speed">
+            <div className="card-testmate p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
+              <div className="text-4xl mb-4">➕</div>
+              <h2 className="text-2xl font-bold mb-2 text-[#A855F7] group-hover:text-[#CBD5E1] transition-colors">
+                Math Speed
               </h2>
               <p className="text-[#CBD5E1]">
-                Reach maximum speed while avoiding obstacles
+                Solve 5 addition problems in 5 seconds each
+              </p>
+            </div>
+          </Link>
+
+          {/* Bike Rush */}
+          <Link href="/brain-test/racing">
+            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
+              <div className="text-4xl mb-4">🚴</div>
+              <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
+                Bike Rush
+              </h2>
+              <p className="text-[#CBD5E1]">
+                Race for 60 seconds, avoid bikes, collect boosts
               </p>
             </div>
           </Link>

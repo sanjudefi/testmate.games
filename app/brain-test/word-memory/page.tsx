@@ -10,7 +10,8 @@ export default function WordMemoryTest() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
   const [currentRound, setCurrentRound] = useState(1);
-  const [originalWords, setOriginalWords] = useState<string[]>([]);
+  const [allRoundWords, setAllRoundWords] = useState<string[][]>([]);
+  const [currentWords, setCurrentWords] = useState<string[]>([]);
   const [allWords, setAllWords] = useState<string[]>([]);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(5);
@@ -27,8 +28,13 @@ export default function WordMemoryTest() {
   }, [phase, timeLeft]);
 
   const startTest = () => {
-    const words = getRandomWords(5);
-    setOriginalWords(words);
+    // Generate 3 DIFFERENT sets of 5 words each
+    const round1Words = getRandomWords(5);
+    const round2Words = getRandomWords(5);
+    const round3Words = getRandomWords(5);
+
+    setAllRoundWords([round1Words, round2Words, round3Words]);
+    setCurrentWords(round1Words);
     setCurrentRound(1);
     setRoundScores([]);
     setTimeLeft(5);
@@ -36,8 +42,8 @@ export default function WordMemoryTest() {
   };
 
   const startRecallPhase = () => {
-    const confusing = getConfusingWords(originalWords, 5);
-    const mixed = [...originalWords, ...confusing].sort(() => Math.random() - 0.5);
+    const confusing = getConfusingWords(currentWords, 5);
+    const mixed = [...currentWords, ...confusing].sort(() => Math.random() - 0.5);
     setAllWords(mixed);
     setSelectedWords([]);
     setPhase("recall");
@@ -52,14 +58,16 @@ export default function WordMemoryTest() {
   };
 
   const submitRoundAnswers = () => {
-    const correct = selectedWords.filter(word => originalWords.includes(word)).length;
+    const correct = selectedWords.filter(word => currentWords.includes(word)).length;
     const roundScore = (correct / 5) * 100;
     const newRoundScores = [...roundScores, Math.round(roundScore)];
     setRoundScores(newRoundScores);
 
     if (currentRound < 3) {
-      // Move to next round
-      setCurrentRound(currentRound + 1);
+      // Move to next round with NEW words
+      const nextRound = currentRound + 1;
+      setCurrentRound(nextRound);
+      setCurrentWords(allRoundWords[nextRound - 1]);
       setTimeLeft(5);
       setPhase("memorize");
     } else {
@@ -84,13 +92,13 @@ export default function WordMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              You'll see <strong className="text-white">5 words</strong> for <strong className="text-white">5 seconds</strong>.
+              You'll see <strong className="text-white">5 DIFFERENT words</strong> for <strong className="text-white">5 seconds</strong>.
             </p>
             <p className="text-lg">
               After each round, immediately select the 5 words you saw.
             </p>
             <p className="text-lg">
-              This repeats <strong className="text-white">3 times</strong> with the same words.
+              This repeats <strong className="text-white">3 times</strong> with NEW words each time.
             </p>
           </div>
           <button
@@ -119,10 +127,10 @@ export default function WordMemoryTest() {
               Round {currentRound} of 3
             </div>
             <div className="text-6xl font-bold text-[#4F7BFE] mb-4">{timeLeft}s</div>
-            <p className="text-xl text-[#CBD5E1]">Memorize these words</p>
+            <p className="text-xl text-[#CBD5E1]">Memorize these NEW words</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {originalWords.map((word, index) => (
+            {currentWords.map((word, index) => (
               <div
                 key={index}
                 className="card-testmate p-8 text-center hover:shadow-glow-blue transition-all"
