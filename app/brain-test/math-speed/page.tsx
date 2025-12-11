@@ -17,7 +17,7 @@ export default function MathSpeedTest() {
   const [phase, setPhase] = useState<GamePhase>("intro");
   const [questions, setQuestions] = useState<MathQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [timeouts, setTimeouts] = useState(0);
@@ -65,7 +65,7 @@ export default function MathSpeedTest() {
     setCorrectAnswers(0);
     setWrongAnswers(0);
     setTimeouts(0);
-    setTimeLeft(5);
+    setTimeLeft(10);
     setPhase("playing");
   };
 
@@ -89,7 +89,7 @@ export default function MathSpeedTest() {
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < 4) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setTimeLeft(5);
+      setTimeLeft(10);
     } else {
       endGame();
     }
@@ -122,7 +122,7 @@ export default function MathSpeedTest() {
               Each question shows <strong className="text-white">two 2-digit numbers</strong> to add.
             </p>
             <p className="text-lg">
-              You have <strong className="text-white">5 seconds</strong> per question.
+              You have <strong className="text-white">10 seconds</strong> per question.
             </p>
             <p className="text-lg">
               Click the correct answer from 2 options. Be careful - one option is close but wrong!
@@ -147,7 +147,7 @@ export default function MathSpeedTest() {
 
   if (phase === "playing") {
     const currentQuestion = questions[currentQuestionIndex];
-    const answers = [currentQuestion.correctAnswer, currentQuestion.wrongAnswer].sort(() => Math.random() - 0.5);
+    const answers = [currentQuestion.correctAnswer, currentQuestion.wrongAnswer]; // Not shuffled
 
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
