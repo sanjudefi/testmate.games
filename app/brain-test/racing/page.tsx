@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 type GamePhase = "intro" | "playing" | "results";
@@ -8,21 +8,21 @@ type GamePhase = "intro" | "playing" | "results";
 interface Obstacle {
   id: number;
   lane: number; // 0 = left, 1 = center, 2 = right
-  y: number;
+  position: number; // 0-100, where 100 is at the car
 }
 
 export default function RacingGame() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
-  const [carLane, setCarLane] = useState(1); // 0 = left, 1 = center, 2 = right
-  const [speed, setSpeed] = useState(20); // km/h
+  const [carLane, setCarLane] = useState(1);
+  const [speed, setSpeed] = useState(50);
+  const [distance, setDistance] = useState(0);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
-  const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
-  const [obstaclesHit, setObstaclesHit] = useState(0);
-  const [obstaclesAvoided, setObstaclesAvoided] = useState(0);
-  const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
-  const obstacleSpawnRef = useRef<NodeJS.Timeout | null>(null);
+  const [collisions, setCollisions] = useState(0);
+  const [score, setScore] = useState(0);
+  const animationFrameRef = useRef<number>();
+  const lastSpawnRef = useRef<number>(0);
 
   useEffect(() => {
     if (phase === "playing" && timeLeft > 0) {
@@ -33,64 +33,67 @@ export default function RacingGame() {
     }
   }, [phase, timeLeft]);
 
+  const gameLoop = useCallback(() => {
+    if (phase !== "playing") return;
+
+    setObstacles(prev => {
+      // Move obstacles forward
+      let updated = prev.map(obs => ({
+        ...obs,
+        position: obs.position + (speed / 10)
+      }));
+
+      // Check for collisions
+      updated.forEach(obs => {
+        if (obs.position >= 95 && obs.position <= 105 && obs.lane === carLane) {
+          // Collision detected
+          setCollisions(c => c + 1);
+          setSpeed(s => Math.max(20, s - 10));
+          // Remove this obstacle
+          updated = updated.filter(o => o.id !== obs.id);
+        }
+      });
+
+      // Remove obstacles that have passed
+      return updated.filter(obs => obs.position < 120);
+    });
+
+    // Update distance
+    setDistance(d => d + speed / 100);
+
+    // Increase speed gradually
+    setSpeed(s => Math.min(s + 0.05, 150));
+
+    // Spawn new obstacles
+    const now = Date.now();
+    if (now - lastSpawnRef.current > 1500) {
+      spawnObstacle();
+      lastSpawnRef.current = now;
+    }
+
+    animationFrameRef.current = requestAnimationFrame(gameLoop);
+  }, [phase, speed, carLane]);
+
   useEffect(() => {
     if (phase === "playing") {
-      // Increase speed gradually
-      const speedInterval = setInterval(() => {
-        setSpeed(prevSpeed => Math.min(prevSpeed + 2, 200));
-      }, 1000);
-
-      // Spawn obstacles
-      obstacleSpawnRef.current = setInterval(() => {
-        spawnObstacle();
-      }, 1500);
-
-      // Move obstacles down
-      gameLoopRef.current = setInterval(() => {
-        setObstacles(prevObstacles => {
-          const updated = prevObstacles.map(obs => ({
-            ...obs,
-            y: obs.y + 10
-          }));
-
-          // Remove obstacles that are off screen
-          const filtered = updated.filter(obs => {
-            if (obs.y > 600) {
-              // Obstacle passed, check if avoided
-              if (obs.lane !== carLane) {
-                setObstaclesAvoided(prev => prev + 1);
-              }
-              return false;
-            }
-            return true;
-          });
-
-          // Check for collisions
-          filtered.forEach(obs => {
-            if (obs.y > 450 && obs.y < 550 && obs.lane === carLane) {
-              handleCollision();
-            }
-          });
-
-          return filtered;
-        });
-      }, 50);
-
-      return () => {
-        if (speedInterval) clearInterval(speedInterval);
-        if (obstacleSpawnRef.current) clearInterval(obstacleSpawnRef.current);
-        if (gameLoopRef.current) clearInterval(gameLoopRef.current);
-      };
+      lastSpawnRef.current = Date.now();
+      animationFrameRef.current = requestAnimationFrame(gameLoop);
     }
-  }, [phase, carLane]);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [phase, gameLoop]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (phase !== "playing") return;
 
-      if (e.key === "ArrowLeft" && carLane > 0) {
+      if ((e.key === "ArrowLeft" || e.key === "a" || e.key === "A") && carLane > 0) {
         setCarLane(carLane - 1);
-      } else if (e.key === "ArrowRight" && carLane < 2) {
+      } else if ((e.key === "ArrowRight" || e.key === "d" || e.key === "D") && carLane < 2) {
         setCarLane(carLane + 1);
       }
     };
@@ -100,38 +103,37 @@ export default function RacingGame() {
   }, [phase, carLane]);
 
   const spawnObstacle = () => {
-    const randomLane = Math.floor(Math.random() * 3);
+    const lane = Math.floor(Math.random() * 3);
     const newObstacle: Obstacle = {
       id: Date.now() + Math.random(),
-      lane: randomLane,
-      y: -50,
+      lane,
+      position: 0,
     };
-
     setObstacles(prev => [...prev, newObstacle]);
-  };
-
-  const handleCollision = () => {
-    setSpeed(prevSpeed => Math.max(prevSpeed - 15, 10));
-    setObstaclesHit(prev => prev + 1);
   };
 
   const startTest = () => {
     setCarLane(1);
-    setSpeed(20);
+    setSpeed(50);
+    setDistance(0);
     setObstacles([]);
-    setObstaclesHit(0);
-    setObstaclesAvoided(0);
     setTimeLeft(30);
+    setCollisions(0);
     setPhase("playing");
   };
 
   const endGame = () => {
-    if (gameLoopRef.current) clearInterval(gameLoopRef.current);
-    if (obstacleSpawnRef.current) clearInterval(obstacleSpawnRef.current);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
 
-    // Score based on final speed
-    const finalScore = Math.min(Math.round((speed / 200) * 100), 100);
-    setScore(finalScore);
+    // Score based on distance traveled and speed
+    const distanceScore = Math.min((distance / 100) * 50, 50);
+    const speedScore = Math.min(((speed - 20) / 130) * 30, 30);
+    const collisionPenalty = Math.min(collisions * 5, 20);
+
+    const finalScore = Math.max(0, Math.round(distanceScore + speedScore + 20 - collisionPenalty));
+    setScore(Math.min(finalScore, 100));
     setPhase("results");
   };
 
@@ -149,16 +151,16 @@ export default function RacingGame() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              Drive for <strong className="text-white">30 seconds</strong> and reach maximum speed!
+              Drive for <strong className="text-white">30 seconds</strong> and go as far as you can!
             </p>
             <p className="text-lg">
-              Use <strong className="text-white">← Left</strong> and <strong className="text-white">Right →</strong> arrow keys to steer.
+              Use <strong className="text-white">← → Arrow Keys</strong> or <strong className="text-white">A/D</strong> to switch lanes.
             </p>
             <p className="text-lg">
-              Speed increases automatically. Avoid obstacles or they'll slow you down!
+              Avoid obstacles! Speed increases automatically.
             </p>
             <p className="text-lg">
-              Your score is based on your <strong className="text-white">final speed</strong>.
+              Score based on <strong className="text-white">distance traveled</strong> and <strong className="text-white">final speed</strong>.
             </p>
           </div>
           <button
@@ -180,64 +182,115 @@ export default function RacingGame() {
 
   if (phase === "playing") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#0F172A]">
-        {/* Stats Display */}
-        <div className="w-full max-w-md flex justify-between mb-4 p-4 card-testmate">
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#0F172A] to-[#1E293B] p-4">
+        {/* HUD */}
+        <div className="flex justify-between items-center mb-4 p-4 bg-[#1E293B]/80 rounded-lg">
           <div>
             <p className="text-[#CBD5E1] text-sm">Time</p>
-            <p className="text-white font-bold text-2xl">{timeLeft}s</p>
+            <p className="text-white font-bold text-xl">{timeLeft}s</p>
           </div>
           <div>
             <p className="text-[#CBD5E1] text-sm">Speed</p>
-            <p className="text-[#4F7BFE] font-bold text-2xl">{speed} km/h</p>
+            <p className="text-[#4F7BFE] font-bold text-xl">{Math.round(speed)} km/h</p>
           </div>
           <div>
-            <p className="text-[#CBD5E1] text-sm">Score</p>
-            <p className="text-[#A855F7] font-bold text-2xl">
-              {Math.min(Math.round((speed / 200) * 100), 100)}
-            </p>
+            <p className="text-[#CBD5E1] text-sm">Distance</p>
+            <p className="text-[#A855F7] font-bold text-xl">{Math.round(distance)}m</p>
+          </div>
+          <div>
+            <p className="text-[#CBD5E1] text-sm">Hits</p>
+            <p className="text-red-400 font-bold text-xl">{collisions}</p>
           </div>
         </div>
 
-        {/* Game Area */}
-        <div className="relative w-full max-w-md h-[600px] bg-[#1E293B] rounded-lg border-4 border-[#334155] overflow-hidden">
-          {/* Road Lanes */}
-          <div className="absolute inset-0 flex">
-            <div className="flex-1 border-r-2 border-dashed border-[#334155]"></div>
-            <div className="flex-1 border-r-2 border-dashed border-[#334155]"></div>
-            <div className="flex-1"></div>
-          </div>
+        {/* Race Track */}
+        <div className="flex-1 flex items-end justify-center perspective-container">
+          <div className="relative w-full max-w-md h-[600px]" style={{
+            background: "linear-gradient(to bottom, #1E293B 0%, #334155 100%)",
+            borderLeft: "4px solid #4F7BFE",
+            borderRight: "4px solid #4F7BFE",
+          }}>
+            {/* Road Markings */}
+            <div className="absolute inset-0 flex">
+              <div className="flex-1 border-r border-dashed border-[#CBD5E1]/30"></div>
+              <div className="flex-1 border-r border-dashed border-[#CBD5E1]/30"></div>
+              <div className="flex-1"></div>
+            </div>
 
-          {/* Obstacles */}
-          {obstacles.map(obstacle => (
+            {/* Obstacles */}
+            {obstacles.map(obstacle => {
+              const laneX = obstacle.lane * 33.33;
+              const obstacleY = 100 - obstacle.position;
+
+              return (
+                <div
+                  key={obstacle.id}
+                  className="absolute transition-all duration-100"
+                  style={{
+                    left: `${laneX + 10}%`,
+                    top: `${obstacleY}%`,
+                    fontSize: `${Math.max(24, 40 - obstacle.position / 3)}px`,
+                  }}
+                >
+                  🚧
+                </div>
+              );
+            })}
+
+            {/* Player Car */}
             <div
-              key={obstacle.id}
-              className="absolute text-4xl"
+              className="absolute text-5xl transition-all duration-200 ease-out"
               style={{
-                left: `${obstacle.lane * 33.33 + 10}%`,
-                top: `${obstacle.y}px`,
-                transition: "none"
+                left: `${carLane * 33.33 + 7}%`,
+                bottom: "20px",
+                filter: "drop-shadow(0 4px 8px rgba(79, 123, 254, 0.6))"
               }}
             >
-              🚧
+              🏎️
             </div>
-          ))}
 
-          {/* Car */}
-          <div
-            className="absolute text-5xl transition-all duration-200"
-            style={{
-              left: `${carLane * 33.33 + 10}%`,
-              bottom: "50px"
-            }}
-          >
-            🏎️
+            {/* Speed Lines Effect */}
+            <div className="absolute inset-0 pointer-events-none opacity-30">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 bg-white"
+                  style={{
+                    left: `${20 + i * 15}%`,
+                    height: `${Math.max(20, speed / 2)}px`,
+                    top: `${(i * 20) % 100}%`,
+                    animation: `speedLine ${3 / (speed / 50)}s linear infinite`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
-        <p className="mt-4 text-[#CBD5E1]">
-          Use ← → arrow keys to move
+        <p className="text-center mt-4 text-[#CBD5E1]">
+          Use ← → Arrow Keys or A/D to move
         </p>
+
+        <style jsx>{`
+          @keyframes speedLine {
+            from {
+              transform: translateY(-100%);
+              opacity: 0;
+            }
+            50% {
+              opacity: 1;
+            }
+            to {
+              transform: translateY(600px);
+              opacity: 0;
+            }
+          }
+
+          .perspective-container {
+            perspective: 1000px;
+          }
+        `}</style>
       </div>
     );
   }
@@ -257,16 +310,16 @@ export default function RacingGame() {
           </div>
           <div className="space-y-4 mb-8">
             <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
+              <span className="text-[#CBD5E1]">Distance Traveled:</span>
+              <span className="text-white font-bold">{Math.round(distance)}m 📏</span>
+            </div>
+            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
               <span className="text-[#CBD5E1]">Final Speed:</span>
-              <span className="text-white font-bold">{speed} km/h 🏎️</span>
+              <span className="text-white font-bold">{Math.round(speed)} km/h 🏎️</span>
             </div>
             <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
               <span className="text-[#CBD5E1]">Obstacles Hit:</span>
-              <span className="text-white font-bold">{obstaclesHit} 🚧</span>
-            </div>
-            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
-              <span className="text-[#CBD5E1]">Obstacles Avoided:</span>
-              <span className="text-white font-bold">{obstaclesAvoided} ✅</span>
+              <span className="text-white font-bold">{collisions} 🚧</span>
             </div>
           </div>
           <button

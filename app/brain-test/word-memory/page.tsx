@@ -9,34 +9,29 @@ type GamePhase = "intro" | "memorize" | "recall" | "results";
 export default function WordMemoryTest() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
+  const [currentRound, setCurrentRound] = useState(1);
   const [originalWords, setOriginalWords] = useState<string[]>([]);
   const [allWords, setAllWords] = useState<string[]>([]);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(5);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [score, setScore] = useState(0);
+  const [roundScores, setRoundScores] = useState<number[]>([]);
+  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
     if (phase === "memorize" && timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (phase === "memorize" && timeLeft === 0) {
-      if (currentRound < 3) {
-        // Move to next round
-        setCurrentRound(currentRound + 1);
-        setTimeLeft(5);
-      } else {
-        // All 3 rounds complete, start recall
-        startRecallPhase();
-      }
+      startRecallPhase();
     }
-  }, [phase, timeLeft, currentRound]);
+  }, [phase, timeLeft]);
 
   const startTest = () => {
     const words = getRandomWords(5);
     setOriginalWords(words);
-    setTimeLeft(5);
     setCurrentRound(1);
+    setRoundScores([]);
+    setTimeLeft(5);
     setPhase("memorize");
   };
 
@@ -44,6 +39,7 @@ export default function WordMemoryTest() {
     const confusing = getConfusingWords(originalWords, 5);
     const mixed = [...originalWords, ...confusing].sort(() => Math.random() - 0.5);
     setAllWords(mixed);
+    setSelectedWords([]);
     setPhase("recall");
   };
 
@@ -55,15 +51,27 @@ export default function WordMemoryTest() {
     }
   };
 
-  const submitAnswers = () => {
+  const submitRoundAnswers = () => {
     const correct = selectedWords.filter(word => originalWords.includes(word)).length;
-    const scoreValue = (correct / 5) * 100;
-    setScore(Math.round(scoreValue));
-    setPhase("results");
+    const roundScore = (correct / 5) * 100;
+    const newRoundScores = [...roundScores, Math.round(roundScore)];
+    setRoundScores(newRoundScores);
+
+    if (currentRound < 3) {
+      // Move to next round
+      setCurrentRound(currentRound + 1);
+      setTimeLeft(5);
+      setPhase("memorize");
+    } else {
+      // All rounds complete
+      const avgScore = Math.round(newRoundScores.reduce((a, b) => a + b, 0) / 3);
+      setTotalScore(avgScore);
+      setPhase("results");
+    }
   };
 
   const saveAndContinue = () => {
-    localStorage.setItem("wordMemoryScore", score.toString());
+    localStorage.setItem("wordMemoryScore", totalScore.toString());
     router.push("/brain-test/number-memory");
   };
 
@@ -76,13 +84,13 @@ export default function WordMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              You'll see <strong className="text-white">5 words</strong> repeated <strong className="text-white">3 times</strong>.
+              You'll see <strong className="text-white">5 words</strong> for <strong className="text-white">5 seconds</strong>.
             </p>
             <p className="text-lg">
-              Each round lasts <strong className="text-white">5 seconds</strong>.
+              After each round, immediately select the 5 words you saw.
             </p>
             <p className="text-lg">
-              After all 3 rounds, select the <strong className="text-white">5 original words</strong> from 10 options.
+              This repeats <strong className="text-white">3 times</strong> with the same words.
             </p>
           </div>
           <button
@@ -136,7 +144,7 @@ export default function WordMemoryTest() {
         <div className="max-w-4xl w-full">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#4F7BFE] mb-2">
-              Select the 5 words you memorized
+              Round {currentRound}: Select the 5 words
             </h2>
             <p className="text-xl text-[#CBD5E1]">
               Selected: {selectedWords.length} / 5
@@ -158,7 +166,7 @@ export default function WordMemoryTest() {
             ))}
           </div>
           <button
-            onClick={submitAnswers}
+            onClick={submitRoundAnswers}
             disabled={selectedWords.length !== 5}
             className={`w-full font-bold py-4 px-8 rounded-lg transition-all ${
               selectedWords.length === 5
@@ -166,7 +174,7 @@ export default function WordMemoryTest() {
                 : "bg-[#334155] text-[#CBD5E1] cursor-not-allowed"
             }`}
           >
-            Submit Answers
+            {currentRound < 3 ? "Next Round" : "Finish Test"}
           </button>
         </div>
       </div>
@@ -182,20 +190,20 @@ export default function WordMemoryTest() {
           </h2>
           <div className="text-center mb-8">
             <div className="text-7xl font-bold text-[#A855F7] mb-4">
-              {score}
+              {totalScore}
             </div>
             <p className="text-2xl text-[#CBD5E1]">out of 100</p>
           </div>
           <div className="space-y-4 mb-8">
-            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
-              <span className="text-[#CBD5E1]">Correct Words:</span>
-              <span className="text-white font-bold">
-                {selectedWords.filter(w => originalWords.includes(w)).length} / 5
-              </span>
-            </div>
-            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
-              <span className="text-[#CBD5E1]">Accuracy:</span>
-              <span className="text-white font-bold">{score}%</span>
+            {roundScores.map((score, index) => (
+              <div key={index} className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
+                <span className="text-[#CBD5E1]">Round {index + 1}:</span>
+                <span className="text-white font-bold">{score}%</span>
+              </div>
+            ))}
+            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg border-2 border-[#4F7BFE]">
+              <span className="text-[#CBD5E1]">Average Score:</span>
+              <span className="text-white font-bold">{totalScore}%</span>
             </div>
           </div>
           <button

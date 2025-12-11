@@ -8,27 +8,22 @@ type GamePhase = "intro" | "memorize" | "recall" | "results";
 export default function NumberMemoryTest() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
-  const [targetNumbers, setTargetNumbers] = useState<string[]>([]);
-  const [userInputs, setUserInputs] = useState<string[]>(["", "", ""]);
-  const [timeLeft, setTimeLeft] = useState(4);
   const [currentNumberIndex, setCurrentNumberIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [targetNumbers, setTargetNumbers] = useState<string[]>([]);
+  const [userInput, setUserInput] = useState("");
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [timeLeft, setTimeLeft] = useState(4);
+  const [numberScores, setNumberScores] = useState<number[]>([]);
+  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
     if (phase === "memorize" && timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (phase === "memorize" && timeLeft === 0) {
-      if (currentNumberIndex < 2) {
-        // Move to next number
-        setCurrentNumberIndex(currentNumberIndex + 1);
-        setTimeLeft(4);
-      } else {
-        // All 3 numbers shown, move to recall
-        setPhase("recall");
-      }
+      setPhase("recall");
     }
-  }, [phase, timeLeft, currentNumberIndex]);
+  }, [phase, timeLeft]);
 
   const generateRandomNumber = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -42,49 +37,55 @@ export default function NumberMemoryTest() {
     ];
     setTargetNumbers(numbers);
     setCurrentNumberIndex(0);
+    setUserAnswers([]);
+    setNumberScores([]);
     setTimeLeft(4);
     setPhase("memorize");
   };
 
-  const calculateScore = () => {
-    let totalCorrectDigits = 0;
+  const calculateNumberScore = (target: string, input: string): number => {
+    if (input === target) {
+      return 100;
+    }
 
-    for (let i = 0; i < 3; i++) {
-      const target = targetNumbers[i];
-      const input = userInputs[i];
-
-      if (input === target) {
-        totalCorrectDigits += 6; // Full marks for exact match
-      } else {
-        // Partial credit for correct digits in correct positions
-        const minLength = Math.min(input.length, target.length);
-        for (let j = 0; j < minLength; j++) {
-          if (input[j] === target[j]) {
-            totalCorrectDigits++;
-          }
-        }
+    // Partial credit for correct digits in correct positions
+    let correctDigits = 0;
+    const minLength = Math.min(input.length, target.length);
+    for (let i = 0; i < minLength; i++) {
+      if (input[i] === target[i]) {
+        correctDigits++;
       }
     }
 
-    // Total possible correct digits: 18 (3 numbers × 6 digits)
-    const accuracy = totalCorrectDigits / 18;
+    const accuracy = correctDigits / 6;
     return Math.round(accuracy * 100);
   };
 
-  const submitAnswer = () => {
-    const scoreValue = calculateScore();
-    setScore(scoreValue);
-    setPhase("results");
-  };
+  const submitNumberAnswer = () => {
+    const target = targetNumbers[currentNumberIndex];
+    const score = calculateNumberScore(target, userInput);
+    const newScores = [...numberScores, score];
+    const newAnswers = [...userAnswers, userInput];
 
-  const updateUserInput = (index: number, value: string) => {
-    const newInputs = [...userInputs];
-    newInputs[index] = value.replace(/\D/g, "");
-    setUserInputs(newInputs);
+    setNumberScores(newScores);
+    setUserAnswers(newAnswers);
+    setUserInput("");
+
+    if (currentNumberIndex < 2) {
+      // Move to next number
+      setCurrentNumberIndex(currentNumberIndex + 1);
+      setTimeLeft(4);
+      setPhase("memorize");
+    } else {
+      // All numbers complete
+      const avgScore = Math.round(newScores.reduce((a, b) => a + b, 0) / 3);
+      setTotalScore(avgScore);
+      setPhase("results");
+    }
   };
 
   const saveAndContinue = () => {
-    localStorage.setItem("numberMemoryScore", score.toString());
+    localStorage.setItem("numberMemoryScore", totalScore.toString());
     router.push("/brain-test/chimp-test");
   };
 
@@ -97,13 +98,13 @@ export default function NumberMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              You'll see <strong className="text-white">3 different 6-digit numbers</strong>.
+              You'll see a <strong className="text-white">6-digit number</strong> for <strong className="text-white">4 seconds</strong>.
             </p>
             <p className="text-lg">
-              Each number is shown for <strong className="text-white">4 seconds</strong>.
+              After each number disappears, type it immediately.
             </p>
             <p className="text-lg">
-              After all 3 numbers, recall each one in order.
+              This repeats <strong className="text-white">3 times</strong> with different numbers.
             </p>
           </div>
           <button
@@ -150,39 +151,33 @@ export default function NumberMemoryTest() {
         <div className="max-w-2xl w-full">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#4F7BFE] mb-2">
-              Recall all 3 numbers
+              Number {currentNumberIndex + 1}: What was it?
             </h2>
             <p className="text-xl text-[#CBD5E1]">
-              Type each 6-digit number you memorized
+              Type the 6-digit number you just saw
             </p>
           </div>
-          <div className="space-y-4 mb-8">
-            {[0, 1, 2].map((index) => (
-              <div key={index} className="card-testmate p-6">
-                <p className="text-lg text-[#CBD5E1] mb-3 text-center">
-                  Number {index + 1}
-                </p>
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={userInputs[index]}
-                  onChange={(e) => updateUserInput(index, e.target.value)}
-                  className="w-full bg-[#0F172A] text-white text-4xl text-center font-bold py-4 px-4 rounded-lg border-2 border-[#334155] focus:border-[#4F7BFE] focus:outline-none tracking-widest"
-                  placeholder="000000"
-                />
-              </div>
-            ))}
+          <div className="card-testmate p-8 mb-8">
+            <input
+              type="text"
+              maxLength={6}
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value.replace(/\D/g, ""))}
+              className="w-full bg-[#0F172A] text-white text-5xl text-center font-bold py-6 px-4 rounded-lg border-2 border-[#334155] focus:border-[#4F7BFE] focus:outline-none tracking-widest"
+              placeholder="000000"
+              autoFocus
+            />
           </div>
           <button
-            onClick={submitAnswer}
-            disabled={userInputs.some(input => input.length !== 6)}
+            onClick={submitNumberAnswer}
+            disabled={userInput.length !== 6}
             className={`w-full font-bold py-4 px-8 rounded-lg transition-all ${
-              userInputs.every(input => input.length === 6)
+              userInput.length === 6
                 ? "bg-[#4F7BFE] hover:bg-[#A855F7] text-white shadow-glow-blue hover:shadow-glow-purple"
                 : "bg-[#334155] text-[#CBD5E1] cursor-not-allowed"
             }`}
           >
-            Submit Answers
+            {currentNumberIndex < 2 ? "Next Number" : "Finish Test"}
           </button>
         </div>
       </div>
@@ -198,33 +193,36 @@ export default function NumberMemoryTest() {
           </h2>
           <div className="text-center mb-8">
             <div className="text-7xl font-bold text-[#A855F7] mb-4">
-              {score}
+              {totalScore}
             </div>
             <p className="text-2xl text-[#CBD5E1]">out of 100</p>
           </div>
           <div className="space-y-4 mb-8">
             {targetNumbers.map((target, index) => (
               <div key={index} className="p-4 bg-[#0F172A] rounded-lg">
-                <p className="text-[#CBD5E1] mb-2">Number {index + 1}:</p>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[#CBD5E1]">Number {index + 1}:</span>
+                  <span className="text-white font-bold">{numberScores[index]}%</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
                   <div>
-                    <p className="text-sm text-[#CBD5E1]">Correct:</p>
-                    <p className="text-2xl font-bold text-white tracking-wider">
+                    <p className="text-[#CBD5E1]">Correct:</p>
+                    <p className="text-xl font-bold text-white tracking-wider">
                       {target}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#CBD5E1]">Your Answer:</p>
-                    <p className="text-2xl font-bold text-white tracking-wider">
-                      {userInputs[index]}
+                    <p className="text-[#CBD5E1]">Your Answer:</p>
+                    <p className="text-xl font-bold text-white tracking-wider">
+                      {userAnswers[index]}
                     </p>
                   </div>
                 </div>
               </div>
             ))}
-            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg">
-              <span className="text-[#CBD5E1]">Overall Accuracy:</span>
-              <span className="text-white font-bold">{score}%</span>
+            <div className="flex justify-between p-4 bg-[#0F172A] rounded-lg border-2 border-[#4F7BFE]">
+              <span className="text-[#CBD5E1]">Average Score:</span>
+              <span className="text-white font-bold">{totalScore}%</span>
             </div>
           </div>
           <button
