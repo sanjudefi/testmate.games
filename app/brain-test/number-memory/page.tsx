@@ -10,7 +10,7 @@ export default function NumberMemoryTest() {
   const [phase, setPhase] = useState<GamePhase>("intro");
   const [targetNumber, setTargetNumber] = useState("");
   const [userInput, setUserInput] = useState("");
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(5);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export default function NumberMemoryTest() {
   const startTest = () => {
     const number = generateRandomNumber();
     setTargetNumber(number);
+    setTimeLeft(5);
     setPhase("memorize");
   };
 
@@ -72,7 +73,7 @@ export default function NumberMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              You'll see a <strong className="text-white">6-digit number</strong> for 15 seconds.
+              You'll see a <strong className="text-white">6-digit number</strong> for 5 seconds.
             </p>
             <p className="text-lg">
               After it disappears, type the number from memory.

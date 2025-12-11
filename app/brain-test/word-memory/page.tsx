@@ -12,7 +12,7 @@ export default function WordMemoryTest() {
   const [originalWords, setOriginalWords] = useState<string[]>([]);
   const [allWords, setAllWords] = useState<string[]>([]);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(5);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -27,6 +27,7 @@ export default function WordMemoryTest() {
   const startTest = () => {
     const words = getRandomWords(5);
     setOriginalWords(words);
+    setTimeLeft(5);
     setPhase("memorize");
   };
 
@@ -66,7 +67,7 @@ export default function WordMemoryTest() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              In this test, you'll see <strong className="text-white">5 words</strong> for 15 seconds.
+              In this test, you'll see <strong className="text-white">5 words</strong> for 5 seconds.
             </p>
             <p className="text-lg">
               After they disappear, you'll see <strong className="text-white">10 words</strong> (5 original + 5 confusing).

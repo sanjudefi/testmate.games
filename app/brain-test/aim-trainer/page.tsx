@@ -18,7 +18,7 @@ export default function AimTrainer() {
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
   const [reactionTimes, setReactionTimes] = useState<number[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [score, setScore] = useState(0);
   const targetAppearTime = useRef<number>(0);
   const gameAreaRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ export default function AimTrainer() {
     setHits(0);
     setMisses(0);
     setReactionTimes([]);
-    setTimeLeft(30);
+    setTimeLeft(10);
     setPhase("playing");
   };
 
@@ -112,7 +112,7 @@ export default function AimTrainer() {
           </h1>
           <div className="space-y-4 text-[#CBD5E1] mb-8">
             <p className="text-lg">
-              Click the circles as fast as you can for <strong className="text-white">30 seconds</strong>.
+              Click the circles as fast as you can for <strong className="text-white">10 seconds</strong>.
             </p>
             <p className="text-lg">
               Each hit counts! Your score is based on accuracy, reaction time, and total hits.

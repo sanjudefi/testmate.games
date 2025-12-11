@@ -17,13 +17,13 @@ All UI components use the official TestMate color palette:
 ## 🎯 Features
 
 ### 1️⃣ Word Memory Test
-- Display 5 random words for 15 seconds
+- Display 5 random words for 5 seconds
 - Test recall by showing 10 words (5 original + 5 confusing)
 - Score based on correct identification
 - **Score**: 0-100 based on accuracy
 
 ### 2️⃣ Number Memory Test
-- Display a random 6-digit number for 15 seconds
+- Display a random 6-digit number for 5 seconds
 - User recalls and types the number
 - Partial credit for correct digits in correct positions
 - **Score**: 0-100 based on accuracy
@@ -35,7 +35,7 @@ All UI components use the official TestMate color palette:
 - **Score**: 0-100 based on correct clicks and mistakes
 
 ### 4️⃣ Aim Trainer
-- 30-second reaction time test
+- 10-second reaction time test
 - Click circles as they appear
 - Track hits, misses, and reaction time
 - **Score**: 0-100 based on accuracy, speed, and total hits
