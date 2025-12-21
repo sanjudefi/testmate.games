@@ -74,20 +74,20 @@ export default function HomePage() {
                 Math Speed
               </h2>
               <p className="text-[#CBD5E1]">
-                Solve 5 addition problems in 5 seconds each
+                Solve 5 addition problems in 10 seconds each
               </p>
             </div>
           </Link>
 
-          {/* Mind Speed Racer */}
-          <Link href="/brain-test/racing">
+          {/* Speed Match */}
+          <Link href="/brain-test/speed-match">
             <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
-              <div className="text-4xl mb-4">🚴</div>
+              <div className="text-4xl mb-4">🔷</div>
               <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
-                Mind Speed Racer
+                Speed Match
               </h2>
               <p className="text-[#CBD5E1]">
-                Race for 30 seconds, avoid bikes, maintain speed
+                Match shapes quickly - visual memory test
               </p>
             </div>
           </Link>

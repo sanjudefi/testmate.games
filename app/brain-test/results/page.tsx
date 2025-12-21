@@ -23,7 +23,7 @@ export default function ResultsPage() {
     const chimpTest = parseInt(localStorage.getItem("chimpTestScore") || "0");
     const catchFish = parseInt(localStorage.getItem("catchFishScore") || "0");
     const mathSpeed = parseInt(localStorage.getItem("mathSpeedScore") || "0");
-    const racing = parseInt(localStorage.getItem("racingScore") || "0");
+    const speedMatch = parseInt(localStorage.getItem("speedMatchScore") || "0");
 
     const testResults: TestResult[] = [
       { name: "Word Memory", score: wordMemory, icon: "🧠", color: "#4F7BFE" },
@@ -31,13 +31,13 @@ export default function ResultsPage() {
       { name: "Chimp Test", score: chimpTest, icon: "🐵", color: "#A855F7" },
       { name: "Catch the Fish", score: catchFish, icon: "🐟", color: "#A855F7" },
       { name: "Math Speed", score: mathSpeed, icon: "➕", color: "#A855F7" },
-      { name: "Mind Speed Racer", score: racing, icon: "🚴", color: "#4F7BFE" },
+      { name: "Speed Match", score: speedMatch, icon: "🔷", color: "#4F7BFE" },
     ];
 
     setResults(testResults);
 
     // Calculate overall score
-    const total = wordMemory + numberMemory + chimpTest + catchFish + mathSpeed + racing;
+    const total = wordMemory + numberMemory + chimpTest + catchFish + mathSpeed + speedMatch;
     const average = Math.round(total / 6);
     setOverallScore(average);
 
@@ -64,7 +64,7 @@ export default function ResultsPage() {
     localStorage.removeItem("chimpTestScore");
     localStorage.removeItem("catchFishScore");
     localStorage.removeItem("mathSpeedScore");
-    localStorage.removeItem("racingScore");
+    localStorage.removeItem("speedMatchScore");
     router.push("/");
   };
 

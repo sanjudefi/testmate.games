@@ -12,7 +12,7 @@ export default function BrainTestPage() {
     localStorage.removeItem("chimpTestScore");
     localStorage.removeItem("catchFishScore");
     localStorage.removeItem("mathSpeedScore");
-    localStorage.removeItem("racingScore");
+    localStorage.removeItem("speedMatchScore");
 
     // Start with the first test
     router.push("/brain-test/word-memory");
@@ -49,17 +49,17 @@ export default function BrainTestPage() {
     },
     {
       name: "Math Speed",
-      description: "Solve 5 addition problems in 5 seconds each",
+      description: "Solve 5 addition problems in 10 seconds each",
       icon: "➕",
       color: "#A855F7",
       path: "/brain-test/math-speed",
     },
     {
-      name: "Mind Speed Racer",
-      description: "Race for 30 seconds, avoid bikes, maintain speed",
-      icon: "🚴",
+      name: "Speed Match",
+      description: "Match shapes quickly - visual memory test",
+      icon: "🔷",
       color: "#4F7BFE",
-      path: "/brain-test/racing",
+      path: "/brain-test/speed-match",
     },
   ];
 

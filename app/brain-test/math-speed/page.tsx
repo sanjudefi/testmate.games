@@ -104,7 +104,7 @@ export default function MathSpeedTest() {
 
   const saveAndContinue = () => {
     localStorage.setItem("mathSpeedScore", score.toString());
-    router.push("/brain-test/racing");
+    router.push("/brain-test/speed-match");
   };
 
   if (phase === "intro") {
@@ -226,7 +226,7 @@ export default function MathSpeedTest() {
             onClick={saveAndContinue}
             className="w-full bg-[#A855F7] hover:bg-[#4F7BFE] text-white font-bold py-4 px-8 rounded-lg transition-all shadow-glow-purple hover:shadow-glow-blue"
           >
-            Continue to Mind Speed Racer
+            Continue to Speed Match
           </button>
         </div>
       </div>
