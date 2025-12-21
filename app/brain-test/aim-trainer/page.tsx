@@ -9,19 +9,13 @@ interface Fish {
   id: number;
   x: number;
   y: number;
-}
-
-interface Teardrop {
-  id: number;
-  x: number;
-  y: number;
+  isAngry?: boolean; // Track if fish was just caught
 }
 
 export default function CatchTheFish() {
   const router = useRouter();
   const [phase, setPhase] = useState<GamePhase>("intro");
   const [fishes, setFishes] = useState<Fish[]>([]);
-  const [teardrops, setTeardrops] = useState<Teardrop[]>([]);
   const [caught, setCaught] = useState(0);
   const [missed, setMissed] = useState(0);
   const [reactionTimes, setReactionTimes] = useState<number[]>([]);
@@ -78,22 +72,17 @@ export default function CatchTheFish() {
     setReactionTimes([...reactionTimes, reactionTime]);
     setCaught(caught + 1);
 
-    // Create teardrops at fish position
-    const newTeardrops: Teardrop[] = [
-      { id: Date.now(), x: fishX + 30, y: fishY + 20 },
-      { id: Date.now() + 1, x: fishX + 60, y: fishY + 20 },
-    ];
-    setTeardrops([...teardrops, ...newTeardrops]);
+    // Make fish turn red/angry
+    setFishes(current =>
+      current.map(f => f.id === fishId ? { ...f, isAngry: true } : f)
+    );
 
-    // Remove teardrops after animation
+    // Remove fish after showing angry state
     setTimeout(() => {
-      setTeardrops(current => current.filter(t => !newTeardrops.find(nt => nt.id === t.id)));
-    }, 1000);
-
-    setFishes([]);
-
-    // Spawn next fish after a short delay
-    setTimeout(spawnFish, 300);
+      setFishes(current => current.filter(f => f.id !== fishId));
+      // Spawn next fish
+      setTimeout(spawnFish, 100);
+    }, 200);
   };
 
   const handleMissClick = () => {
@@ -206,40 +195,17 @@ export default function CatchTheFish() {
               style={{
                 left: `${fish.x}px`,
                 top: `${fish.y}px`,
-                filter: "drop-shadow(0 0 15px rgba(79, 123, 254, 0.6))"
+                filter: fish.isAngry
+                  ? "drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(1.5) hue-rotate(180deg)"
+                  : "drop-shadow(0 0 15px rgba(79, 123, 254, 0.6))"
               }}
             >
               🐟
             </button>
           ))}
-
-          {/* Teardrops */}
-          {teardrops.map((tear) => (
-            <div
-              key={tear.id}
-              className="absolute text-4xl animate-teardrop pointer-events-none"
-              style={{
-                left: `${tear.x}px`,
-                top: `${tear.y}px`,
-              }}
-            >
-              💧
-            </div>
-          ))}
         </div>
 
         <style jsx>{`
-          @keyframes teardrop {
-            0% {
-              transform: translateY(0) scale(1);
-              opacity: 1;
-            }
-            100% {
-              transform: translateY(-80px) scale(0.5);
-              opacity: 0;
-            }
-          }
-
           @keyframes swim {
             0%, 100% {
               transform: translateY(0px);
@@ -259,10 +225,6 @@ export default function CatchTheFish() {
             100% {
               transform: translateX(0) translateY(0);
             }
-          }
-
-          .animate-teardrop {
-            animation: teardrop 1s ease-out forwards;
           }
 
           .animate-swim {
