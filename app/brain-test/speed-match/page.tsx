@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-type GamePhase = "intro" | "memorize" | "question" | "results";
+type GamePhase = "intro" | "memorize" | "question" | "transition" | "results";
 type Shape = "circle" | "square" | "triangle" | "hexagon" | "pentagon";
 
 const SHAPES: Shape[] = ["circle", "square", "triangle", "hexagon", "pentagon"];
@@ -19,6 +19,7 @@ export default function SpeedMatchTest() {
   const [reactionTimes, setReactionTimes] = useState<number[]>([]);
   const [questionStartTime, setQuestionStartTime] = useState(0);
   const [score, setScore] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"in" | "out">("in");
 
   const totalRounds = 15;
 
@@ -79,12 +80,34 @@ export default function SpeedMatchTest() {
     const nextRound = currentRound + 1;
     if (nextRound < totalRounds) {
       setCurrentRound(nextRound);
-      setPreviousShape(currentShape);
-      setPhase("memorize");
+
+      // Slide out current shape
+      setSlideDirection("out");
+      setPhase("transition");
 
       setTimeout(() => {
-        showQuestion(currentShape);
-      }, 1500);
+        // Current shape becomes previous shape
+        setPreviousShape(currentShape);
+
+        // Generate next shape
+        const shouldMatch = Math.random() > 0.5;
+        let nextShape = shouldMatch ? currentShape : getRandomShape();
+
+        if (!shouldMatch) {
+          while (nextShape === currentShape) {
+            nextShape = getRandomShape();
+          }
+        }
+
+        setCurrentShape(nextShape);
+        setSlideDirection("in");
+
+        // Show question immediately
+        setTimeout(() => {
+          setQuestionStartTime(Date.now());
+          setPhase("question");
+        }, 100);
+      }, 400);
     } else {
       endGame();
     }
@@ -216,11 +239,78 @@ export default function SpeedMatchTest() {
           <p className="text-xl text-[#CBD5E1] mb-2">Round {currentRound + 1} of {totalRounds}</p>
         </div>
 
-        <div className="w-full max-w-md aspect-square bg-white rounded-2xl shadow-2xl flex items-center justify-center mb-8 p-12">
+        <div className="w-full max-w-md aspect-square bg-white rounded-2xl shadow-2xl flex items-center justify-center mb-8 p-12 animate-slide-in">
           {renderShape(currentShape)}
         </div>
 
         <p className="text-2xl text-white font-semibold">Remember the shape.</p>
+
+        <style jsx>{`
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+
+          .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (phase === "transition") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#1a365d] to-[#0F172A]">
+        <div className="text-center mb-8">
+          <p className="text-xl text-[#CBD5E1] mb-2">Round {currentRound + 1} of {totalRounds}</p>
+        </div>
+
+        <div
+          className={`w-full max-w-md aspect-square bg-white rounded-2xl shadow-2xl flex items-center justify-center mb-8 p-12 ${
+            slideDirection === "out" ? "animate-slide-out" : "animate-slide-in"
+          }`}
+        >
+          {renderShape(slideDirection === "out" ? previousShape : currentShape)}
+        </div>
+
+        <style jsx>{`
+          @keyframes slideOut {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(-100%);
+              opacity: 0;
+            }
+          }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+
+          .animate-slide-out {
+            animation: slideOut 0.4s ease-in;
+          }
+
+          .animate-slide-in {
+            animation: slideIn 0.4s ease-out;
+          }
+        `}</style>
       </div>
     );
   }
@@ -233,7 +323,7 @@ export default function SpeedMatchTest() {
             <p className="text-xl text-[#CBD5E1] mb-2">Round {currentRound + 1} of {totalRounds}</p>
           </div>
 
-          <div className="w-full max-w-md aspect-square bg-white rounded-2xl shadow-2xl flex items-center justify-center mb-8 p-12">
+          <div className="w-full max-w-md aspect-square bg-white rounded-2xl shadow-2xl flex items-center justify-center mb-8 p-12 animate-slide-in">
             {renderShape(currentShape)}
           </div>
 
@@ -256,6 +346,23 @@ export default function SpeedMatchTest() {
             YES
           </button>
         </div>
+
+        <style jsx>{`
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+
+          .animate-slide-in {
+            animation: slideIn 0.4s ease-out;
+          }
+        `}</style>
       </div>
     );
   }
