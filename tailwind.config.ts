@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // TestMate Brand Colors
+        // TutorTom Brand Colors
         primary: {
           blue: "#4F7BFE",
         },

@@ -91,7 +91,7 @@ export default function ResultsPage() {
         </div>
 
         {/* Overall Score */}
-        <div className="card-testmate p-8 mb-8 text-center">
+        <div className="card-tutortom p-8 mb-8 text-center">
           <h2 className="text-2xl text-[#CBD5E1] mb-4">Overall Score</h2>
           <div
             className="text-8xl font-bold mb-4"
@@ -106,7 +106,7 @@ export default function ResultsPage() {
         </div>
 
         {/* Individual Test Results */}
-        <div className="card-testmate p-8 mb-8">
+        <div className="card-tutortom p-8 mb-8">
           <h2 className="text-3xl font-bold text-white mb-6 text-center">
             Individual Test Scores
           </h2>
@@ -165,7 +165,7 @@ export default function ResultsPage() {
         </div>
 
         {/* Detailed Breakdown */}
-        <div className="card-testmate p-8 mt-8">
+        <div className="card-tutortom p-8 mt-8">
           <h3 className="text-2xl font-bold text-white mb-6">
             Performance Breakdown
           </h3>

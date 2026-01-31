@@ -81,7 +81,7 @@ export default function BrainTestPage() {
           </button>
         </div>
 
-        <div className="card-testmate p-8 mb-8">
+        <div className="card-tutortom p-8 mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">
             What You'll Test
           </h2>
@@ -106,7 +106,7 @@ export default function BrainTestPage() {
           </div>
         </div>
 
-        <div className="card-testmate p-8 mb-8">
+        <div className="card-tutortom p-8 mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">How It Works</h2>
           <div className="space-y-4 text-[#CBD5E1]">
             <div className="flex items-start gap-4">

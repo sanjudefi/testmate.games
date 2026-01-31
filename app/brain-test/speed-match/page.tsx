@@ -197,7 +197,7 @@ export default function SpeedMatchTest() {
   if (phase === "intro") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h1 className="text-4xl font-bold mb-4 text-[#4F7BFE]">
             🔷 Speed Match
           </h1>
@@ -375,7 +375,7 @@ export default function SpeedMatchTest() {
 
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h2 className="text-4xl font-bold mb-4 text-center text-[#4F7BFE]">
             Test Complete! 🔷
           </h2>

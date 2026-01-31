@@ -92,7 +92,7 @@ export default function NumberMemoryTest() {
   if (phase === "intro") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h1 className="text-4xl font-bold mb-4 text-[#4F7BFE]">
             🔢 Number Memory Test
           </h1>
@@ -135,7 +135,7 @@ export default function NumberMemoryTest() {
             <div className="text-6xl font-bold text-[#4F7BFE] mb-4">{timeLeft}s</div>
             <p className="text-xl text-[#CBD5E1]">Memorize this number</p>
           </div>
-          <div className="card-testmate p-12 text-center hover:shadow-glow-blue">
+          <div className="card-tutortom p-12 text-center hover:shadow-glow-blue">
             <span className="text-7xl font-bold text-white tracking-widest">
               {targetNumbers[currentNumberIndex]}
             </span>
@@ -157,7 +157,7 @@ export default function NumberMemoryTest() {
               Type the 6-digit number you just saw
             </p>
           </div>
-          <div className="card-testmate p-8 mb-8">
+          <div className="card-tutortom p-8 mb-8">
             <input
               type="text"
               maxLength={6}
@@ -187,7 +187,7 @@ export default function NumberMemoryTest() {
   if (phase === "results") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h2 className="text-4xl font-bold mb-4 text-center text-[#4F7BFE]">
             Results
           </h2>

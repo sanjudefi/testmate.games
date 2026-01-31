@@ -110,7 +110,7 @@ export default function ChimpTest() {
   if (phase === "intro") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h1 className="text-4xl font-bold mb-4 text-[#A855F7]">
             🐵 Chimp Test
           </h1>
@@ -154,7 +154,7 @@ export default function ChimpTest() {
             {squares.map((square) => (
               <div
                 key={square.id}
-                className="absolute w-20 h-20 md:w-24 md:h-24 card-testmate flex items-center justify-center shadow-glow-purple cursor-not-allowed"
+                className="absolute w-20 h-20 md:w-24 md:h-24 card-tutortom flex items-center justify-center shadow-glow-purple cursor-not-allowed"
                 style={{
                   left: `${square.x * 20}%`,
                   top: `${square.y * 20}%`,
@@ -210,7 +210,7 @@ export default function ChimpTest() {
 
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h2 className="text-4xl font-bold mb-4 text-center text-[#A855F7]">
             Results
           </h2>

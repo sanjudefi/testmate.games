@@ -1,8 +1,8 @@
 /**
- * TestMate Brand Colors - Extracted from UI Screenshot
+ * TutorTom Brand Colors - Extracted from UI Screenshot
  * Use these exact colors throughout the Brain Test feature
  */
-export const TESTMATE_COLORS = {
+export const TUTORTOM_COLORS = {
   primaryBlue: "#4F7BFE",
   accentPurple: "#A855F7",
   backgroundDark: "#0F172A",
@@ -12,4 +12,4 @@ export const TESTMATE_COLORS = {
   textLightGrey: "#CBD5E1",
 } as const;
 
-export type TestMateColor = typeof TESTMATE_COLORS[keyof typeof TESTMATE_COLORS];
+export type TutorTomColor = typeof TUTORTOM_COLORS[keyof typeof TUTORTOM_COLORS];

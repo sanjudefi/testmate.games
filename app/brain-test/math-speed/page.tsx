@@ -110,7 +110,7 @@ export default function MathSpeedTest() {
   if (phase === "intro") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h1 className="text-4xl font-bold mb-4 text-[#A855F7]">
             ➕ Math Speed Test
           </h1>
@@ -159,7 +159,7 @@ export default function MathSpeedTest() {
             <div className="text-6xl font-bold text-[#A855F7] mb-4">{timeLeft}s</div>
           </div>
 
-          <div className="card-testmate p-12 mb-8">
+          <div className="card-tutortom p-12 mb-8">
             <div className="text-center mb-8">
               <p className="text-xl text-[#CBD5E1] mb-4">What is:</p>
               <p className="text-7xl font-bold text-white mb-2">
@@ -194,7 +194,7 @@ export default function MathSpeedTest() {
   if (phase === "results") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full card-testmate p-8">
+        <div className="max-w-2xl w-full card-tutortom p-8">
           <h2 className="text-4xl font-bold mb-4 text-center text-[#A855F7]">
             Results
           </h2>

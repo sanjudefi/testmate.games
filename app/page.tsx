@@ -6,7 +6,7 @@ export default function HomePage() {
       <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#4F7BFE] to-[#A855F7] bg-clip-text text-transparent">
-            TestMate
+            TutorTom
           </h1>
           <p className="text-xl text-[#CBD5E1]">
             Challenge your brain with daily cognitive tests
@@ -16,7 +16,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Word Memory Test */}
           <Link href="/brain-test/word-memory">
-            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🧠</div>
               <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
                 Word Memory
@@ -29,7 +29,7 @@ export default function HomePage() {
 
           {/* Number Memory Test */}
           <Link href="/brain-test/number-memory">
-            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🔢</div>
               <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
                 Number Memory
@@ -42,7 +42,7 @@ export default function HomePage() {
 
           {/* Chimp Test */}
           <Link href="/brain-test/chimp-test">
-            <div className="card-testmate p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🐵</div>
               <h2 className="text-2xl font-bold mb-2 text-[#A855F7] group-hover:text-[#CBD5E1] transition-colors">
                 Chimp Test
@@ -55,7 +55,7 @@ export default function HomePage() {
 
           {/* Catch the Fish */}
           <Link href="/brain-test/aim-trainer">
-            <div className="card-testmate p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🐟</div>
               <h2 className="text-2xl font-bold mb-2 text-[#A855F7] group-hover:text-[#CBD5E1] transition-colors">
                 Catch the Fish
@@ -68,7 +68,7 @@ export default function HomePage() {
 
           {/* Math Speed */}
           <Link href="/brain-test/math-speed">
-            <div className="card-testmate p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-purple transition-all cursor-pointer group">
               <div className="text-4xl mb-4">➕</div>
               <h2 className="text-2xl font-bold mb-2 text-[#A855F7] group-hover:text-[#CBD5E1] transition-colors">
                 Math Speed
@@ -81,7 +81,7 @@ export default function HomePage() {
 
           {/* Speed Match */}
           <Link href="/brain-test/speed-match">
-            <div className="card-testmate p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
+            <div className="card-tutortom p-8 hover:shadow-glow-blue transition-all cursor-pointer group">
               <div className="text-4xl mb-4">🔷</div>
               <h2 className="text-2xl font-bold mb-2 text-[#4F7BFE] group-hover:text-[#CBD5E1] transition-colors">
                 Speed Match
