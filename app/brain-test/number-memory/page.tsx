@@ -159,7 +159,9 @@ export default function NumberMemoryTest() {
           </div>
           <div className="card-tutortom p-8 mb-8">
             <input
-              type="text"
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               maxLength={6}
               value={userInput}
               onChange={(e) => setUserInput(e.target.value.replace(/\D/g, ""))}
