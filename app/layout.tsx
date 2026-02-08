@@ -118,6 +118,9 @@ export const metadata: Metadata = {
     },
   },
   category: "education",
+  verification: {
+    google: "PBU_EHAo3l_2uvoDRyQoR0DSxHgRJz6xBwwc53Yh_3U",
+  },
 };
 
 export default function RootLayout({
